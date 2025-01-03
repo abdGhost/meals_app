@@ -21,10 +21,10 @@ class Meal {
     required this.duration,
     required this.complexity,
     required this.affordability,
-    required this.isGlutenFree,
-    required this.isLactoseFree,
-    required this.isVegan,
-    required this.isVegetarian,
+    this.isGlutenFree = false,
+    this.isLactoseFree = false,
+    this.isVegan = false,
+    this.isVegetarian = false,
   });
 
   final String id;
@@ -40,4 +40,26 @@ class Meal {
   final bool isLactoseFree;
   final bool isVegan;
   final bool isVegetarian;
+
+  String get complexityText {
+    switch (complexity) {
+      case Complexity.simple:
+        return 'Simple';
+      case Complexity.challenging:
+        return 'Challenging';
+      case Complexity.hard:
+        return 'Hard';
+    }
+  }
+
+  String get affordabilityText {
+    switch (affordability) {
+      case Affordability.affordable:
+        return 'Affordable';
+      case Affordability.pricey:
+        return 'Pricey';
+      case Affordability.luxurious:
+        return 'Luxurious';
+    }
+  }
 }

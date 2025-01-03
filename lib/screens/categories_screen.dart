@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meal/data/dummy_data.dart';
 import 'package:meal/models/meal.dart';
 import 'package:meal/screens/meals.dart';
 import 'package:meal/widgets/category_grid_item.dart';
-
 import '../models/category.dart';
+import '../data/dummy_data.dart';
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({
@@ -12,11 +11,12 @@ class CategoriesScreen extends StatelessWidget {
     required this.onToggleFavorites,
     required this.availableMeals,
   });
+
   final void Function(Meal meal) onToggleFavorites;
   final List<Meal> availableMeals;
 
   void _selectedCategory(BuildContext context, Category category) {
-    final filteredMeals = dummyMeals
+    final filteredMeals = availableMeals
         .where((meal) => meal.categories.contains(category.id))
         .toList();
 
@@ -34,26 +34,24 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView(
-      padding: EdgeInsets.all(24.0),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3 / 2,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
-      ),
-      children: [
-        for (final category in availableCategories)
-          CategoryGridItem(
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 3 / 2,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+        ),
+        itemCount: availableCategories.length,
+        itemBuilder: (ctx, index) {
+          final category = availableCategories[index];
+          return CategoryGridItem(
             category: category,
-            onSelectCategory: () {
-              _selectedCategory(
-                context,
-                category,
-              );
-            },
-          )
-      ],
+            onSelectCategory: () => _selectedCategory(context, category),
+          );
+        },
+      ),
     );
   }
 }

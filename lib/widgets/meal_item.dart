@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:meal/models/meal.dart';
-import 'package:meal/screens/meal_details_screen.dart';
 import 'package:meal/widgets/meal_item_trait.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -26,39 +25,38 @@ class MealItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8.0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          8,
-        ),
+        borderRadius: BorderRadius.circular(12),
       ),
       clipBehavior: Clip.hardEdge,
-      elevation: 2,
+      elevation: 4,
       child: InkWell(
-        onTap: () {
-          onSelectMeal(meal);
-        },
+        onTap: () => onSelectMeal(meal),
         child: Stack(
           children: [
+            // Meal Image with Fade-in effect
             FadeInImage(
               placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(
-                meal.imageUrl,
-              ),
+              image: NetworkImage(meal.imageUrl),
               fit: BoxFit.cover,
               height: 200,
               width: double.infinity,
             ),
+
+            // Meal Details Overlay
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: Container(
-                color: Colors.black54,
-                padding: EdgeInsets.symmetric(
-                  vertical: 6,
-                  horizontal: 44,
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 16,
                 ),
                 child: Column(
                   children: [
@@ -68,38 +66,31 @@ class MealItem extends StatelessWidget {
                       textAlign: TextAlign.center,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 20,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
-                    SizedBox(
-                      height: 12,
-                    ),
+                    const SizedBox(height: 8),
+
+                    // Traits Row
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         MealItemTrait(
                           icon: Icons.schedule,
                           label: '${meal.duration} min',
                         ),
-                        SizedBox(
-                          width: 12,
-                        ),
                         MealItemTrait(
                           icon: Icons.work,
-                          label: '$complexityText min',
-                        ),
-                        SizedBox(
-                          width: 12,
+                          label: complexityText,
                         ),
                         MealItemTrait(
                           icon: Icons.attach_money,
-                          label: '$affordabilityText min',
+                          label: affordabilityText,
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

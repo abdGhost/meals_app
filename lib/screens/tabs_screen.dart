@@ -17,9 +17,7 @@ class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() {
-    return _TabsScreenState();
-  }
+  State<TabsScreen> createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
@@ -30,24 +28,26 @@ class _TabsScreenState extends State<TabsScreen> {
 
   void _showInfoMessage(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
-  void _toggleMealFavtoriteStatus(Meal meal) {
+  void _toggleMealFavoriteStatus(Meal meal) {
     final isExisting = _favoriteMeals.contains(meal);
 
-    if (isExisting) {
-      setState(() {
+    setState(() {
+      if (isExisting) {
         _favoriteMeals.remove(meal);
-        _showInfoMessage('Meal is no longer favorites');
-      });
-    } else {
-      setState(() {
+        _showInfoMessage('Meal removed from favorites');
+      } else {
         _favoriteMeals.add(meal);
-        _showInfoMessage('Meal is added to favorites');
-      });
-    }
+        _showInfoMessage('Meal added to favorites');
+      }
+    });
   }
 
   void _selectPage(int index) {
@@ -56,14 +56,12 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
-  void _setScreen(String identifier) async {
+  Future<void> _setScreen(String identifier) async {
     Navigator.of(context).pop();
     if (identifier == 'filters') {
       final result = await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(
-            currentFilters: selectedFilters,
-          ),
+          builder: (ctx) => FiltersScreen(currentFilters: selectedFilters),
         ),
       );
 
@@ -79,40 +77,41 @@ class _TabsScreenState extends State<TabsScreen> {
       if (selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;
       }
-
       if (selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
         return false;
       }
-
       if (selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
         return false;
       }
-
       if (selectedFilters[Filter.vegan]! && !meal.isVegan) {
         return false;
       }
       return true;
     }).toList();
 
-    Widget activePage = CategoriesScreen(
-      availableMeals: availableMeals,
-      onToggleFavorites: _toggleMealFavtoriteStatus,
-    );
-    var activePageTitle = 'Categories';
+    late Widget activePage;
+    var activePageTitle = '';
 
-    if (selectedPageIndex == 1) {
-      activePage = MealsScreen(
-        onToggleFavorites: _toggleMealFavtoriteStatus,
-        meals: _favoriteMeals,
-      );
-      activePageTitle = 'Your Favorites';
+    switch (selectedPageIndex) {
+      case 0:
+        activePage = CategoriesScreen(
+          availableMeals: availableMeals,
+          onToggleFavorites: _toggleMealFavoriteStatus,
+        );
+        activePageTitle = 'Categories';
+        break;
+      case 1:
+        activePage = MealsScreen(
+          onToggleFavorites: _toggleMealFavoriteStatus,
+          meals: _favoriteMeals,
+        );
+        activePageTitle = 'Your Favorites';
+        break;
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          activePageTitle,
-        ),
+        title: Text(activePageTitle),
       ),
       drawer: MainDrawer(
         onSelectScreen: _setScreen,
@@ -121,7 +120,7 @@ class _TabsScreenState extends State<TabsScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedPageIndex,
         onTap: _selectPage,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.set_meal,

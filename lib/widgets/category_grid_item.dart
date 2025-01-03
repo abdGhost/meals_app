@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/category.dart';
 
 class CategoryGridItem extends StatelessWidget {
@@ -10,18 +9,19 @@ class CategoryGridItem extends StatelessWidget {
   });
 
   final Category category;
-  final void Function() onSelectCategory;
+  final VoidCallback onSelectCategory;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return InkWell(
       onTap: onSelectCategory,
-      splashColor: Theme.of(context).primaryColor,
+      splashColor: theme.primaryColor.withOpacity(0.4),
       borderRadius: BorderRadius.circular(16.0),
       child: Container(
-        padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.0),
           gradient: LinearGradient(
             colors: [
               category.color.withOpacity(0.55),
@@ -31,11 +31,18 @@ class CategoryGridItem extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Text(
-          category.title,
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: Theme.of(context).colorScheme.onBackground,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              category.title,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onBackground,
+                fontWeight: FontWeight.bold,
               ),
+            ),
+          ),
         ),
       ),
     );

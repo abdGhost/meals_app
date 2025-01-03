@@ -12,20 +12,21 @@ class MealItemTrait extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           icon,
-          color: Colors.white,
+          color: theme.colorScheme.onPrimary,
           size: 17,
         ),
-        SizedBox(
-          width: 6,
-        ),
+        const SizedBox(width: 6),
         Text(
           label,
-          style: TextStyle(
-            color: Colors.white,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onPrimary,
           ),
         ),
       ],
